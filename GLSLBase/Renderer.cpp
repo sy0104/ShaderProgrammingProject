@@ -71,9 +71,10 @@ void Renderer::CreateVertexBufferObjects()
 
 	float lecture2[] =
 	{
-		0.0, 0.0, 0.0,
-		1.0, 0.0, 0.0,
-		1.0, 1.0, 0.0
+		// pos		
+		0.0, 0.0, 0.0, 
+		1.0, 0.0, 0.0, 
+		1.0, 1.0, 0.0 
 	};	// 9 floats array
 	
 	//float lecture2[] =
@@ -87,9 +88,17 @@ void Renderer::CreateVertexBufferObjects()
 	//	1.0, 1.0, 0.0,
 	//};	// 9 floats array
 
-	glGenBuffers(1, &m_VBOLecture2);	// buffer를 하나 만들어서 m_VBOLecture2에 넣어줌
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture2), lecture2, GL_STATIC_DRAW);	// update 안할거기 때문에 static
+	float lecture3[] =
+	{
+		// pos			color
+		0.0, 0.0, 0.0, 1, 0, 0, 1,
+		1.0, 0.0, 0.0, 0, 1, 0, 1,
+		1.0, 1.0, 0.0, 0, 0, 1, 1,
+	};	// 21 floats array
+
+	glGenBuffers(1, &m_VBOLecture3);	// buffer를 하나 만들어서 m_VBOLecture2에 넣어줌
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture3), lecture3, GL_STATIC_DRAW);	// update 안할거기 때문에 static
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -353,11 +362,19 @@ void Renderer::Lecture3()
 
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+
+	int attribColor = glGetAttribLocation(shader, "a_Color");
+	glEnableVertexAttribArray(attribColor);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture3); // 위에서 해줬기 때문에 또 해줄 필요는 없음
+	glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (GLvoid*)(sizeof(float) * 3));
 
 	int uniformLocTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uniformLocTime, gTime);
+
+	int uniformLocColor = glGetUniformLocation(shader, "u_Color");
+	glUniform4f(uniformLocColor, 1, 1, 1, 1);
 
 	glDrawArrays(GL_TRIANGLES, 0, 3);
 
