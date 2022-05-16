@@ -26,7 +26,8 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 
 	//Load shaders
 	m_SolidRectShader = CompileShaders("./Shaders/SolidRect.vs", "./Shaders/SolidRect.fs");
-	
+	m_Lecture3Shader = CompileShaders("./Shaders/lecture3.vs", "./Shaders/lecture3.fs");
+
 	//Create VBOs
 	CreateVertexBufferObjects();
 
@@ -68,23 +69,23 @@ void Renderer::CreateVertexBufferObjects()
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBORect);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(rect), rect, GL_STATIC_DRAW);
 
-	//float lecture2[] =
-	//{
-	//	0.0, 0.0, 0.0,
-	//	1.0, 0.0, 0.0,
-	//	1.0, 1.0, 0.0
-	//};	// 9 floats array
-	//
 	float lecture2[] =
 	{
-		-1.0, -1.0, 0.0,
-		0.0, 0.0, 0.0,
-		-1.0, 0.0, 0.0,
-
 		0.0, 0.0, 0.0,
 		1.0, 0.0, 0.0,
-		1.0, 1.0, 0.0,
+		1.0, 1.0, 0.0
 	};	// 9 floats array
+	
+	//float lecture2[] =
+	//{
+	//	-1.0, -1.0, 0.0,
+	//	0.0, 0.0, 0.0,
+	//	-1.0, 0.0, 0.0,
+
+	//	0.0, 0.0, 0.0,
+	//	1.0, 0.0, 0.0,
+	//	1.0, 1.0, 0.0,
+	//};	// 9 floats array
 
 	glGenBuffers(1, &m_VBOLecture2);	// buffer를 하나 만들어서 m_VBOLecture2에 넣어줌
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
@@ -337,9 +338,31 @@ void Renderer::Lecture2()
 	int attribPosition = glGetAttribLocation(m_SolidRectShader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+float gTime = 1.f;
+void Renderer::Lecture3()
+{
+	GLuint shader = m_Lecture3Shader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLecture2);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+	int uniformLocTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformLocTime, gTime);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	gTime -= 0.0001f;
+	if (gTime < 0.f) gTime = 1.f;
 
 	glDisableVertexAttribArray(attribPosition);
 }

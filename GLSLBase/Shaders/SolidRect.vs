@@ -1,5 +1,6 @@
 #version 450
 
+// in: attribÀÌ¶û µ¿ÀÏ
 in vec3 a_Position;
 
 void main()
