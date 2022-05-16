@@ -26,7 +26,8 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->Test();
+	//g_Renderer->Test();
+	g_Renderer->Lecture2();
 
 	glutSwapBuffers();
 }
@@ -54,9 +55,10 @@ void SpecialKeyInput(int key, int x, int y)
 int main(int argc, char **argv)
 {
 	// Initialize GL things
+	// glut: window와 OpenGL 사이를 맞춰주는 역할을 하는 툴
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowPosition(200, 200);
+	glutInitWindowPosition(200, 200);	// window os 상에서 화면 좌표
 	glutInitWindowSize(g_WindowSizeX, g_WindowSizeY);
 	glutCreateWindow("GLSL KPU");
 
