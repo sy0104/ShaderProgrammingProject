@@ -6,6 +6,7 @@ in float a_EmitTime;
 in float a_LifeTime;
 in float a_Amp;
 in float a_Period;
+in float a_RandomValue;
 
 uniform float u_Time;
 uniform vec3 u_Accel;
@@ -25,6 +26,11 @@ void main()
 
 	if (t > 0)
 	{
+		newPos.x = sin(a_RandomValue * 2 * g_PI);
+		newPos.y = cos(a_RandomValue * 2 * g_PI);
+		newPos.z = 0;
+		newPos = a_Position + newPos;
+		
 		float temp = t / a_LifeTime;
 		float fractional = fract(temp);	// 소수점 아래부분만 빼서 넣어줌
 		t = fractional * a_LifeTime;
@@ -32,7 +38,7 @@ void main()
 
 		float period = a_Period;	// 주기
 		float amp = a_Amp;	// 진폭
-		newPos = a_Position + a_Velocity * t + 0.5 * u_Accel * tt;
+		newPos = newPos + a_Velocity * t + 0.5 * u_Accel * tt;
 
 		vec3 rotVec = normalize(a_Velocity * g_RotMat);
 		newPos = newPos + t * amp * rotVec * sin(period * t * 2.0 * g_PI);
