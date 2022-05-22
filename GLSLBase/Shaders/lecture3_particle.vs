@@ -12,7 +12,8 @@ uniform vec3 u_Accel;
 
 bool bLoop = true;	// ¼÷Á¦
 
-float g_PI = 3.14;
+const float g_PI = 3.14;
+const mat3 g_RotMat = mat3(0, -1, 0, 1, 0, 0, 0, 0, 0);
 
 void main()
 {
@@ -31,9 +32,10 @@ void main()
 
 		float period = a_Period;	// ÁÖ±â
 		float amp = a_Amp;	// ÁøÆø
+		newPos = a_Position + a_Velocity * t + 0.5 * u_Accel * tt;
 
-		newPos.x = a_Position.x + a_Velocity.x * t + 0.5 * u_Accel.x * tt;
-		newPos.y = a_Position.y + amp * sin(period * t * 2.0 * g_PI);
+		vec3 rotVec = normalize(a_Velocity * g_RotMat);
+		newPos = newPos + t * amp * rotVec * sin(period * t * 2.0 * g_PI);
 		newPos.z = 0;
 	}
 

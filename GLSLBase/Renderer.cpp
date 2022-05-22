@@ -148,13 +148,13 @@ void Renderer::CreateParticle(int count)
 		randomValueX = 0.f;	// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
 		randomValueY = 0.f;	// ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
 		randomValueZ = 0.f;
-		randomValueVX = 1.f; // ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
-		randomValueVY = 0.f; // ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
+		randomValueVX = ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
+		randomValueVY = ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f; //-1~1
 		randomValueVZ = 0.f;
-		randomEmitTime = ((float)rand() / (float)RAND_MAX - 0.5f) * 5.f;
-		randomLifeTime = 1.f; // ((float)rand() / (float)RAND_MAX - 0.5f) * 1.f;
-		randomAmp = ((float)rand() / (float)RAND_MAX - 0.5f) * 0.4f - 0.2f;
-		randomPeriod = ((float)rand() / (float)RAND_MAX - 0.5f) * 2.f;
+		randomEmitTime = ((float)rand() / (float)RAND_MAX) * 5.f;
+		randomLifeTime = ((float)rand() / (float)RAND_MAX) * 2.f;
+		randomAmp = ((float)rand() / (float)RAND_MAX) * 0.4f - 0.2f;
+		randomPeriod = ((float)rand() / (float)RAND_MAX) * 2.f;
 
 		//v0
 		particleVertices[index] = -particleSize / 2.f + randomValueX;
@@ -617,7 +617,7 @@ void Renderer::Lecture3_Particle()
 	glUniform1f(uniformTime, gTime);
 
 	int uniformAccel = glGetUniformLocation(shader, "u_Accel");
-	glUniform3f(uniformAccel, 0.f, 0.f, 0.f);
+	glUniform3f(uniformAccel, 5.f, 0.f, 0.f);
 
 	gTime += 0.0005f;
 
