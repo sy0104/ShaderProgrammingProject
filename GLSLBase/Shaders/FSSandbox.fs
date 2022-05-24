@@ -66,10 +66,12 @@ vec4 DrawMultipleCircles()
 vec4 DrawCircles()
 {
 	vec4 returnColor = vec4(0);
-	for (int i = 0; i < 10; i++)
+	
+	for(int i = 0; i < 10; i++)
 	{
 		float d = distance(u_Points[i].xy, v_Color.xy);
 		float temp = sin(10 * d * 4 * PI - u_Time * 100);
+
 		if (d < u_Time)
 			returnColor += vec4(temp);
 
@@ -80,11 +82,31 @@ vec4 DrawCircles()
 	return returnColor;
 }
 
+vec4 RadarCircle()
+{
+	float d = distance(vec2(0.5, 0), v_Color.xy);
+	float sinValue = sin(d * 2 * PI - u_Time * 100);
+	sinValue = pow(sinValue, 16);
+	vec4 returnColor = vec4(sinValue);
+
+	for (int i = 0; i < 10; ++i)
+	{
+		float dTemp= distance(u_Points[i].xy, v_Color.xy);
+
+		if (dTemp < 0.01)
+			returnColor += vec4(0.2);
+	}
+
+
+	return returnColor;
+}
+
 void main()
 {
 	//FragColor = CrossPattern();
 	//FragColor = DrawCircle();
 	//FragColor = DrawCircleLine();
 	//FragColor = DrawMultipleCircles();
-	FragColor = DrawCircles();
+	//FragColor = DrawCircles();
+	FragColor = RadarCircle();
 }
