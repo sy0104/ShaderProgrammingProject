@@ -789,7 +789,7 @@ void Renderer::Lecture4_RadarCircle()
 
 	int uniformTime = glGetUniformLocation(shader, "u_Time");
 	glUniform1f(uniformTime, gTime);
-	gTime += 0.00003;
+	gTime += 0.00004;
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

@@ -88,14 +88,13 @@ vec4 RadarCircle()
 	vec4 returnColor = vec4(sinValue);
 
 	for (int i = 0; i < 10; i++)
+	
 	{
 		float dTemp = distance(u_Points[i].xy, v_Color.xy);
-		float temp = sin(dTemp * 4 * PI);
-		temp = clamp(temp, 0, 1);
-		if (dTemp < 0.2)
-			returnColor += 0.2 * vec4(temp);
+		if (dTemp < 0.01)
+			returnColor += vec4(1.0);
 	}
-
+	
 	return returnColor;
 }
 
