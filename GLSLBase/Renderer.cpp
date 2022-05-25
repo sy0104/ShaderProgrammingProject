@@ -30,6 +30,7 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture3ParticleShader = CompileShaders("./Shaders/lecture3_particle.vs", "./Shaders/lecture3_particle.fs");
 	m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
 	m_LineSegmentShader = CompileShaders("./Shaders/LineSegment.vs", "./Shaders/LineSegment.fs");
+	m_LineFullRectShader = CompileShaders("./Shaders/FullRect.vs", "./Shaders/FullRect.fs");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
@@ -201,6 +202,24 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOPack1);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack1);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lectire4Pack1), lectire4Pack1, GL_STATIC_DRAW);
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	rectSize = 1.f;
+	float lecture5_fullRect[] =
+	{
+		-rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		-rectSize,  rectSize, 0.0,
+		-rectSize, -rectSize, 0.0,
+		 rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+	};	
+
+	glGenBuffers(1, &m_VBOFullRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture5_fullRect), lecture5_fullRect, GL_STATIC_DRAW);
+
 
 }
 
@@ -926,4 +945,24 @@ void Renderer::Lecture5_LineSegment()
 	glDrawArrays(GL_LINE_STRIP, 0, m_VBOLineSegmentCount);
 
 	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5_FullRect()
+{
+	GLuint shader = m_LineFullRectShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	
+	int uniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.001;
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+
 }
