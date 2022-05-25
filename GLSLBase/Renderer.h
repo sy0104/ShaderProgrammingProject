@@ -75,6 +75,5 @@ private:
 	GLuint m_VBOPack0_Pos = 0;
 	GLuint m_VBOPack0_Color = 0;
 	GLuint m_VBOPack1 = 0;
-	GLuint m_VBOPack2 = 0;
 };
 

@@ -172,6 +172,32 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOPack0_Color);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4Pck0_Color), lecture4Pck0_Color, GL_STATIC_DRAW);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	float lectire4Pack1[] =
+	{
+		// position
+		-rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		-rectSize,  rectSize, 0.0,
+		-rectSize, -rectSize, 0.0,
+		 rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		 // color
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+
+	};	// 21 floats array
+
+	glGenBuffers(1, &m_VBOPack1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lectire4Pack1), lectire4Pack1, GL_STATIC_DRAW);
+
 }
 
 void Renderer::CreateParticle(int count)
@@ -811,20 +837,37 @@ void Renderer::Lecture4_RadarCircle()
 	GLuint shader = m_FSSandboxShader;
 	glUseProgram(shader);
 
+	//// 2. 钦模 Array 积己 1
 	//int attribPosition = glGetAttribLocation(shader, "a_Position");
 	//glEnableVertexAttribArray(attribPosition);
-	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);	// x, y, z, r, g, b, a -> stride 7
-	//glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+	//int attribColor = glGetAttribLocation(shader, "a_Color");
+	//glEnableVertexAttribArray(attribColor);
 
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);
+	//glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+	//glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (GLvoid*)(sizeof(float) * 3));
+
+	//// 1. 阿阿 Array 积己
+	//int attribPosition = glGetAttribLocation(shader, "a_Position");
+	//glEnableVertexAttribArray(attribPosition);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Pos);	// x, y, z
+	//glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);	// stirde 0档 凳
+
+	//int attribColor = glGetAttribLocation(shader, "a_Color");
+	//glEnableVertexAttribArray(attribColor);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);
+	//glVertexAttribPointer(attribColor, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	
+	// 2. 钦模 Array 积己 2
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Pos);	// x, y, z
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);	// stirde 0档 凳
-
 	int attribColor = glGetAttribLocation(shader, "a_Color");
 	glEnableVertexAttribArray(attribColor);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);
-	glVertexAttribPointer(attribColor, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack1);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 18));
+
 
 	int uniformPoints = glGetUniformLocation(shader, "u_Points");
 	glUniform3fv(uniformPoints, 10, g_points);
