@@ -3,6 +3,7 @@
 layout(location=0) out vec4 FragColor;
 
 in vec4 v_Color;
+in vec4 v_ColorOverride;
 
 const float PI = 3.141592;
 
@@ -104,5 +105,6 @@ void main()
 	//FragColor = DrawCircleLine();
 	//FragColor = DrawMultipleCircles();
 	//FragColor = DrawCircles();
-	FragColor = RadarCircle();
+	//FragColor = RadarCircle() * v_ColorOverride;
+	FragColor = RadarCircle() * v_ColorOverride;
 }
