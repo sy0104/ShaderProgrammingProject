@@ -29,12 +29,16 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture3Shader = CompileShaders("./Shaders/lecture3.vs", "./Shaders/lecture3.fs");
 	m_Lecture3ParticleShader = CompileShaders("./Shaders/lecture3_particle.vs", "./Shaders/lecture3_particle.fs");
 	m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
+	m_LineSegmentShader = CompileShaders("./Shaders/LineSegment.vs", "./Shaders/LineSegment.fs");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
 	
 	// Create Particles
 	CreateParticle(1000);
+
+	// Create Line Segments
+	CreateLine(2000);
 
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -440,6 +444,30 @@ void Renderer::CreateParticle(int count)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, particleVertices, GL_STATIC_DRAW);
 	m_VBOManyParticleVertexCount = vertexCount;
 	delete[]particleVertices;
+}
+
+void Renderer::CreateLine(int SegCount)
+{
+	int floatCount = SegCount * 3;	// x, y, z
+	float* lineVertices = new float[floatCount];
+	int vertexCount = SegCount;
+	int index = 0;
+
+	for (int i = 0; i < SegCount; i++)
+	{
+		lineVertices[index] = -1.f + i * 2.f / (SegCount - 1);
+		index++;
+		lineVertices[index] = 0.f;
+		index++;
+		lineVertices[index] = 0.f;
+		index++;
+	}
+
+	glGenBuffers(1, &m_VBOLineSegment);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, lineVertices, GL_STATIC_DRAW);
+	m_VBOLineSegmentCount = vertexCount;
+	delete[]lineVertices;
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -877,6 +905,25 @@ void Renderer::Lecture4_RadarCircle()
 	gTime += 0.00003;
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5_LineSegment()
+{
+	GLuint shader = m_LineSegmentShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.001;
+
+	glDrawArrays(GL_LINE_STRIP, 0, m_VBOLineSegmentCount);
 
 	glDisableVertexAttribArray(attribPosition);
 }
