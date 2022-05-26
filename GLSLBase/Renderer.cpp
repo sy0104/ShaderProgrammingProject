@@ -29,12 +29,17 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	m_Lecture3Shader = CompileShaders("./Shaders/lecture3.vs", "./Shaders/lecture3.fs");
 	m_Lecture3ParticleShader = CompileShaders("./Shaders/lecture3_particle.vs", "./Shaders/lecture3_particle.fs");
 	m_FSSandboxShader = CompileShaders("./Shaders/FSSandbox.vs", "./Shaders/FSSandbox.fs");
+	m_LineSegmentShader = CompileShaders("./Shaders/LineSegment.vs", "./Shaders/LineSegment.fs");
+	m_LineFullRectShader = CompileShaders("./Shaders/FullRect.vs", "./Shaders/FullRect.fs");
 
 	//Create VBOs
 	CreateVertexBufferObjects();
 	
 	// Create Particles
 	CreateParticle(1000);
+
+	// Create Line Segments
+	CreateLine(2000);
 
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
@@ -140,6 +145,82 @@ void Renderer::CreateVertexBufferObjects()
 	glGenBuffers(1, &m_VBOSandbox);
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4_rect), lecture4_rect, GL_STATIC_DRAW);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	float lecture4Pck0_Pos[] =
+	{
+		-rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		-rectSize,  rectSize, 0.0,
+
+		-rectSize, -rectSize, 0.0,
+		 rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+	};
+
+	float lecture4Pck0_Color[] =
+	{
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+		1, 1, 1, 1,
+	};
+
+	glGenBuffers(1, &m_VBOPack0_Pos);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Pos);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4Pck0_Pos), lecture4Pck0_Pos, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &m_VBOPack0_Color);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture4Pck0_Color), lecture4Pck0_Color, GL_STATIC_DRAW);
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	float lectire4Pack1[] =
+	{
+		// position
+		-rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		-rectSize,  rectSize, 0.0,
+		-rectSize, -rectSize, 0.0,
+		 rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		 // color
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+		 1, 1, 1, 1,
+
+	};	// 21 floats array
+
+	glGenBuffers(1, &m_VBOPack1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack1);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lectire4Pack1), lectire4Pack1, GL_STATIC_DRAW);
+	
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	rectSize = 1.f;
+	float lecture5_fullRect[] =
+	{
+		-rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+		-rectSize,  rectSize, 0.0,
+		-rectSize, -rectSize, 0.0,
+		 rectSize, -rectSize, 0.0,
+		 rectSize,  rectSize, 0.0,
+	};	
+
+	glGenBuffers(1, &m_VBOFullRect);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(lecture5_fullRect), lecture5_fullRect, GL_STATIC_DRAW);
+
+
 }
 
 void Renderer::CreateParticle(int count)
@@ -382,6 +463,30 @@ void Renderer::CreateParticle(int count)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, particleVertices, GL_STATIC_DRAW);
 	m_VBOManyParticleVertexCount = vertexCount;
 	delete[]particleVertices;
+}
+
+void Renderer::CreateLine(int SegCount)
+{
+	int floatCount = SegCount * 3;	// x, y, z
+	float* lineVertices = new float[floatCount];
+	int vertexCount = SegCount;
+	int index = 0;
+
+	for (int i = 0; i < SegCount; i++)
+	{
+		lineVertices[index] = -1.f + i * 2.f / (SegCount - 1);
+		index++;
+		lineVertices[index] = 0.f;
+		index++;
+		lineVertices[index] = 0.f;
+		index++;
+	}
+
+	glGenBuffers(1, &m_VBOLineSegment);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * floatCount, lineVertices, GL_STATIC_DRAW);
+	m_VBOLineSegmentCount = vertexCount;
+	delete[]lineVertices;
 }
 
 void Renderer::AddShader(GLuint ShaderProgram, const char* pShaderText, GLenum ShaderType)
@@ -779,10 +884,37 @@ void Renderer::Lecture4_RadarCircle()
 	GLuint shader = m_FSSandboxShader;
 	glUseProgram(shader);
 
+	//// 2. 钦模 Array 积己 1
+	//int attribPosition = glGetAttribLocation(shader, "a_Position");
+	//glEnableVertexAttribArray(attribPosition);
+	//int attribColor = glGetAttribLocation(shader, "a_Color");
+	//glEnableVertexAttribArray(attribColor);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);
+	//glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+	//glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 7, (GLvoid*)(sizeof(float) * 3));
+
+	//// 1. 阿阿 Array 积己
+	//int attribPosition = glGetAttribLocation(shader, "a_Position");
+	//glEnableVertexAttribArray(attribPosition);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Pos);	// x, y, z
+	//glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);	// stirde 0档 凳
+
+	//int attribColor = glGetAttribLocation(shader, "a_Color");
+	//glEnableVertexAttribArray(attribColor);
+	//glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack0_Color);
+	//glVertexAttribPointer(attribColor, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	
+	// 2. 钦模 Array 积己 2
 	int attribPosition = glGetAttribLocation(shader, "a_Position");
 	glEnableVertexAttribArray(attribPosition);
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBOSandbox);	// x, y, z, r, g, b, a -> stride 7
-	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 7, 0);
+	int attribColor = glGetAttribLocation(shader, "a_Color");
+	glEnableVertexAttribArray(attribColor);
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOPack1);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	glVertexAttribPointer(attribColor, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 4, (GLvoid*)(sizeof(float) * 18));
+
 
 	int uniformPoints = glGetUniformLocation(shader, "u_Points");
 	glUniform3fv(uniformPoints, 10, g_points);
@@ -794,4 +926,43 @@ void Renderer::Lecture4_RadarCircle()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5_LineSegment()
+{
+	GLuint shader = m_LineSegmentShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOLineSegment);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+
+	int uniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.001;
+
+	glDrawArrays(GL_LINE_STRIP, 0, m_VBOLineSegmentCount);
+
+	glDisableVertexAttribArray(attribPosition);
+}
+
+void Renderer::Lecture5_FullRect()
+{
+	GLuint shader = m_LineFullRectShader;
+	glUseProgram(shader);
+
+	int attribPosition = glGetAttribLocation(shader, "a_Position");
+	glEnableVertexAttribArray(attribPosition);
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBOFullRect);
+	glVertexAttribPointer(attribPosition, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
+	
+	int uniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.001;
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glDisableVertexAttribArray(attribPosition);
+
 }
