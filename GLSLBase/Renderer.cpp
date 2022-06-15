@@ -45,6 +45,9 @@ void Renderer::Initialize(int windowSizeX, int windowSizeY)
 	// Create Textures
 	CreateTextures();
 
+	// Load Textures
+	m_TexRGB = CreatePngTexture("rgb.png");
+
 	//Initialize camera settings
 	m_v3Camera_Position = glm::vec3(0.f, 0.f, 1000.f);
 	m_v3Camera_Lookat = glm::vec3(0.f, 0.f, 0.f);
@@ -1020,7 +1023,7 @@ void Renderer::Lecture6_TexSandbox()
 	int uniformTex = glGetUniformLocation(shader, "u_TexSampler");
 	glUniform1f(uniformTex, 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_TexChecker);
+	glBindTexture(GL_TEXTURE_2D, m_TexRGB);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

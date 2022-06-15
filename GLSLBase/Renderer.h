@@ -93,5 +93,6 @@ private:
 
 	GLuint m_TextureSandboxShader;
 	GLuint m_VBOTexSandbox;
+	GLuint m_TexRGB = 0;
 };
 
