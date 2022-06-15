@@ -1021,9 +1021,18 @@ void Renderer::Lecture6_TexSandbox()
 	glVertexAttribPointer(attribTex, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (GLvoid*)(sizeof(float) * 3));
 
 	int uniformTex = glGetUniformLocation(shader, "u_TexSampler");
-	glUniform1f(uniformTex, 0);
+	glUniform1i(uniformTex, 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_TexRGB);
+
+	int uniformTex1 = glGetUniformLocation(shader, "u_TexSampler1");
+	glUniform1i(uniformTex1, 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, m_TexChecker);
+
+	int uniformTime = glGetUniformLocation(shader, "u_Time");
+	glUniform1f(uniformTime, gTime);
+	gTime += 0.001;
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
