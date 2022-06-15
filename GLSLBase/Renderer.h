@@ -29,6 +29,7 @@ public:
 	void Lecture4_RadarCircle();
 	void Lecture5_LineSegment();
 	void Lecture5_FullRect();
+	void Lecture6_TexSandbox();
 
 private:
 	void Initialize(int windowSizeX, int windowSizeY);
@@ -39,6 +40,7 @@ private:
 	unsigned char * Renderer::loadBMPRaw(const char * imagepath, unsigned int& outWidth, unsigned int& outHeight);
 	void CreateParticle(int count);
 	void CreateLine(int SegCount);
+	void CreateTextures();
 
 	bool m_Initialized = false;
 	
@@ -79,6 +81,8 @@ private:
 	GLuint m_VBOPack0_Color = 0;
 	GLuint m_VBOPack1 = 0;
 
+	GLuint m_TexChecker = 0;
+
 	GLuint m_VBOLineSegment = 0;
 	GLuint m_VBOLineSegmentCount = 0;
 
@@ -86,5 +90,8 @@ private:
 
 	GLuint m_LineFullRectShader = 0;
 	GLuint m_VBOFullRect = 0;
+
+	GLuint m_TextureSandboxShader;
+	GLuint m_VBOTexSandbox;
 };
 
